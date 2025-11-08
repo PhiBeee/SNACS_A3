@@ -1,4 +1,5 @@
-from preprocess import load, mention_graph
+from load_data import load
+from preprocess_mentions import mention_graph, save_mentions_graph
 
 def main():
     data = load('small')
