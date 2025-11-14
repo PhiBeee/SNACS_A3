@@ -8,7 +8,7 @@ def load(file: str) -> list:
     '''
     filename = '../data/twitter-'+file+'.tsv'
     data = []
-    with open(filename) as file:
+    with open(filename,encoding="utf-8") as file:
         data = [line.strip().split('\t') for line in file]
 
     return data
@@ -23,7 +23,7 @@ def load_processed_graph(name: str, data_size: str):
     filename = '../data/'+name+'_'+data_size+'.csv'
     data = []
     # Read in our lines
-    with open(filename)as file:
+    with open(filename,encoding="utf-8")as file:
         data = [line.strip().split(',') for line in file]
 
     # Turn them into tuples (from, to, weight)
