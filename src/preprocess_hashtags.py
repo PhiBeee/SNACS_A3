@@ -1,9 +1,9 @@
 import re 
 import igraph as ig
 import networkx as nx
-from networkx.algorithms.bipartite import weighted_projected_graph, is_bipartite
+from networkx.algorithms.bipartite import weighted_projected_graph
 from tqdm import tqdm
-from convenience import get_hashtag_set
+from convenience import get_hashtag_set, remove_overlap
 
 def hashtag_graph(data, rt = True):
     '''
@@ -40,7 +40,7 @@ def hashtag_graph(data, rt = True):
 
     return hashtags
 
-def project_graph(edges: list):
+def project_graph(edges: list, remove_overlap_flag: bool):
     '''
     This function takes the hashtag graph, which should be bipartite and projects it 
     so we have the connection between the users based on their hashtag usage
@@ -51,9 +51,7 @@ def project_graph(edges: list):
     # Grabs our edges and turns them into a nx graph
     g = nx.DiGraph()
     g.add_weighted_edges_from(edges)
-    # TODO : Figure out why the graph is not bipartite (It works but its still not bipartite??)
-    if is_bipartite(g): print('Great joy')
-    else: print('Sadness')
+    if remove_overlap_flag: g = remove_overlap(edges, g)
     g = weighted_projected_graph(g, get_hashtag_set(edges))
 
     # TODO: test if this works and then save the projected hashtag graph

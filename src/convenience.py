@@ -15,8 +15,14 @@ def why_no_bipartite(edges):
     hashtags = get_hashtag_set(edges)
     users = list(set([edge[0] for edge in edges]))
 
+    double_entries = []
     for user in users:
         if user in hashtags:
-            print(f'Evil fucking bastard: {user}')
+            double_entries.append(user)
 
-    # TODO: Figure out what to do with these overlaps
+    return double_entries
+
+def remove_overlap(edges, graph):
+    overlap = why_no_bipartite(edges)
+    graph.remove_nodes_from(overlap)
+    return graph
