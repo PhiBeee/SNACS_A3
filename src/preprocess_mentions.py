@@ -15,17 +15,26 @@ def mention_graph(data, lenient = False, rt = True, subrt = False):
     for tweet in tqdm(data):
         user = tweet[1]
         # Remove cut off mentions at the end of a tweet
-        tweet[2] = re.sub(r'[@](\w{4,}|\s\w{4,})\s[.]{3,}', '')
+        tweet[2] = re.sub(r'[@](\w{4,}|\s\w{4,})\s[.]{3,}', '', tweet[2])
 
         # If we don't accept retweets we just remove everything after the retweet from the string
         if not rt:
-            tweet[2] = re.sub(r'[R][T]\s[@](\w{4,}|\s\w{4,}).*', '')
+            tweet[2] = re.sub(r'[R][T]\s[@](\w{4,}|\s\w{4,}).*', '', tweet[2])
         elif not subrt:
+            # If we already don't have content we just move on
+            if tweet[2] == None:
+                continue
             # Gets the position where the subtweet starts
-            end_pos = re.search(r'[R][T]\s[@](\w{4,}|\s\w{4,})', tweet).span()[1]
+            end_pos = re.search(r'[R][T]\s[@](\w{4,}|\s\w{4,})', tweet[2])
+            if end_pos == None:
+                continue
+            end_pos = end_pos.span()[1]
             # Only keeps the quote tweet and the RT account
             tweet[2] = tweet[2][:end_pos]
 
+        if tweet[2] == None:
+                continue
+        
         # allows for single space separation because twitter users sometimes dont want to notify the person
         if lenient: tweet_mentions = re.findall(r'[@](\w{4,}|\s\w{4,})', tweet[2])
         else: tweet_mentions = re.findall(r'[@]\w{4,}', tweet[2])
@@ -56,7 +65,7 @@ def save_mentions_graph(graph: dict, data_size: str):
             # Add (user, mention, weight) to our list
             out.append(f'{user},{mention},{graph[user].count(mention)}')
 
-    with open(f'mentions_{data_size}.csv', 'w+') as f:
+    with open(f'../data/mentions_{data_size}.csv', 'w+') as f:
         for item in out:
             f.write(f'{item}\n')
     f.close()
