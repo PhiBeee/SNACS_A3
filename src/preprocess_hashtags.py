@@ -74,7 +74,7 @@ def save_bipartite_hashtag_graph(graph: dict, data_size: str):
         for hashtag in set(graph[user]):
             out.append(f'{user},{hashtag},{graph[user].count(hashtag)}')
 
-    with open(f'../data/hashtags_bipartite_{data_size}.csv', 'w+') as f:
+    with open(f'../data/hashtags_bipartite_{data_size}.csv', 'w+',encoding="utf-8") as f:
         for item in out:
             f.write(f'{item}\n')
 
