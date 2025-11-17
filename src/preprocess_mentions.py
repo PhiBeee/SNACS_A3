@@ -65,7 +65,7 @@ def save_mentions_graph(graph: dict, data_size: str):
             # Add (user, mention, weight) to our list
             out.append(f'{user},{mention},{graph[user].count(mention)}')
 
-    with open(f'../data/mentions_{data_size}.csv', 'w+') as f:
+    with open(f'../data/mentions_{data_size}.csv', 'w+', encoding='utf-8') as f:
         for item in out:
             f.write(f'{item}\n')
     f.close()

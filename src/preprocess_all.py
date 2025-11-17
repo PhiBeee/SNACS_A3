@@ -1,6 +1,6 @@
 from load_data import load, load_processed_graph
 from preprocess_mentions import mention_graph, save_mentions_graph
-from preprocess_hashtags import hashtag_graph, save_bipartite_hashtag_graph, project_graph
+from preprocess_hashtags import hashtag_graph, save_bipartite_hashtag_graph, project_graph_and_save
 
 def generate_data_files(data_size: str, lenient = True, rt = True, subrt = True):
     '''
@@ -20,4 +20,4 @@ def generate_data_files(data_size: str, lenient = True, rt = True, subrt = True)
     save_bipartite_hashtag_graph(hg, data_size)
 
     ht_edges = load_processed_graph('hashtags_bipartite', data_size)
-    project_graph(ht_edges)
+    project_graph_and_save(ht_edges, True, data_size)

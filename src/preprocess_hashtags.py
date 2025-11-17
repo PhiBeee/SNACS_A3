@@ -1,9 +1,10 @@
 import re 
 import igraph as ig
 import networkx as nx
-from networkx.algorithms.bipartite import weighted_projected_graph
+from networkx.algorithms.bipartite import weighted_projected_graph, is_bipartite, is_bipartite_node_set
 from tqdm import tqdm
-from convenience import get_hashtag_set, remove_overlap
+from convenience import get_hashtag_set, remove_overlap, get_user_set
+from projection import project_weighted_edge_list, projection_format_to_file_format
 
 def hashtag_graph(data, rt = True):
     '''
@@ -40,23 +41,31 @@ def hashtag_graph(data, rt = True):
 
     return hashtags
 
-def project_graph(edges: list, remove_overlap_flag: bool):
+def project_graph_and_save(edges: list, remove_overlap_flag: bool, data_size: str):
     '''
     This function takes the hashtag graph, which should be bipartite and projects it 
     so we have the connection between the users based on their hashtag usage
+    After projecting saves it to a file.
 
     @param edges: Our bipartite graph as a list of tuples (from, to, weight)
+    @param remove_overlap_flag: Boolean to decide whether to remove user/hashtag overlap or not
     :returns: The projection of that graph
     '''
     # Grabs our edges and turns them into a nx graph
     g = nx.DiGraph()
     g.add_weighted_edges_from(edges)
-    if remove_overlap_flag: g = remove_overlap(edges, g)
-    g = weighted_projected_graph(g, get_hashtag_set(edges))
+    if remove_overlap_flag: g, edges = remove_overlap(edges, g)
+    # g = weighted_projected_graph(g, get_user_set(edges))
+    # The networkx function was too weird so I made my own
+    projected_edges = project_weighted_edge_list(edges)
+    formatted_edges = projection_format_to_file_format(projected_edges)
 
-    # TODO: test if this works and then save the projected hashtag graph
+    # print(len(g.edges)) 
+    with open(f'../data/hashtags_{data_size}.csv', 'w+', encoding='utf-8') as f:
+        for item in formatted_edges:
+            f.write(f'{item}\n') 
 
-    
+    f.close()  
 
 def save_bipartite_hashtag_graph(graph: dict, data_size: str):
     '''
