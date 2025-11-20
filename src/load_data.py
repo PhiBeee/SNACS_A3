@@ -23,7 +23,7 @@ def load_processed_graph(name: str, data_size: str):
     filename = '../data/'+name+'_'+data_size+'.csv'
     data = []
     # Read in our lines
-    with open(filename,encoding="utf-8")as file:
+    with open(filename,encoding="utf-8") as file:
         data = [line.strip().split(',') for line in file]
 
     # Turn them into tuples (from, to, weight)

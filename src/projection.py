@@ -2,15 +2,14 @@ from convenience import get_user_set
 import networkx as nx
 from tqdm import tqdm
 
-# Slow and can lead to using too much memory
 def project_weighted_edge_list(edges):
     '''
     Function that projects our graph by forming relations between two users who have used the same hashtag.
     The weight of the projected edge will be the 
     sum of all weights the user had to the hashtags in common with the other user.
+    Saves the projection to a file as it goes along
 
     @param edges: List of edges (u,v,w) user, hashtag, weight
-    :returns: Weird fucking format idk why I decided on this tbh
     '''
     users = get_user_set(edges)
 
@@ -20,8 +19,10 @@ def project_weighted_edge_list(edges):
 
     # Get a reverse so we can lookup the hashtags faster 
     g_r = g.reverse(True)
+    
+    # Erase content from previous run 
+    open('../data/hashtags_projected_small.csv', 'w', encoding='utf-8').close()
 
-    projected_edges = []
     for user in tqdm(users):
         relation_dict = {}
         # print(g[user])
@@ -37,18 +38,9 @@ def project_weighted_edge_list(edges):
                 # If the user isnt in the relations dict we add the new entry
                 else:
                     relation_dict[related_user] = g[user][hashtag]['weight']
+        # Save to file as we iterate through the users to avoid RAM overflow
+        append_to_file(projection_format_to_file_format(([(user,relation_dict)])))    
 
-        projected_edges.append((user,relation_dict))     
-
-    return projected_edges  
-
-def projection_2(edges):
-    g = nx.DiGraph()
-    g.add_weighted_edges_from(edges)
-
-    pred = g.pred
-    
-    nodes = get_user_set(edges)
 
 def projection_format_to_file_format(projected_edges):
     '''
@@ -61,3 +53,15 @@ def projection_format_to_file_format(projected_edges):
             save_format.append((user_from, user_to, user[1][user_to])) # Wtf was I cooking
 
     return save_format
+
+def append_to_file(save_format):
+    '''
+    Takes the edges ready to be saved and appends them to the file
+    This is to avoid RAM memory overflow by saving the edges as we project
+    '''
+
+    with open('../data/hashtags_projected_small.csv', 'a+', encoding='utf-8') as f:
+        for entry in save_format:
+            f.write(f'{entry[0]},{entry[1]},{entry[2]}\n')
+
+    f.close()

@@ -208,3 +208,6 @@ __marimo__/
 
 test.py
 .vscode/*
+
+# Data that is too big because I cant be bothered with git lfs
+data/hashtags_projected*
