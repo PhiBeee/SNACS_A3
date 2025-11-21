@@ -25,3 +25,4 @@ This will currently load in the data and generate three processed files: `mentio
 - Topic modelling
 - Consider a different format for the projected graph file to lower file size
 - Weight calculation
+- Try different file format

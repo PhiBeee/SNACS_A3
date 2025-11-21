@@ -30,3 +30,36 @@ def load_processed_graph(name: str, data_size: str):
     data = [(line[0], line[1], int(line[2])) for line in data]
 
     return data
+
+def load_subset(name: str, data_size: str, amount_of_users: int):
+    '''
+    Function to load a subset of the dataset specified by the amount of users from which edges are going out
+
+    @param name: name of the dataset file to subset, needs to have been preprocessed
+    @param data_size: data_size of that dataset
+    @param amount_of_users: the amount of users to take for the subset
+    :returns: List of outgoing edges from the users of the selected subset
+    '''
+    # Set of users to keep track of unique users
+    user_set = {}
+    edges = []
+
+    filename = f'../data/{name}_{data_size}.csv'
+
+    current_user = None
+    with open(filename, 'r', encoding='utf-8') as f:
+        for line in f:
+            line = line.strip().split(',')
+
+            # User change, since each user comes one after the other
+            if line[0] != current_user:
+                # Stop if we have the amount of users we wanted
+                if len(user_set) == amount_of_users:
+                    break
+
+                user_set.add(line[0])
+                current_user = line[0]
+        
+            edges.append((line[0], line[1], int(line[2])))
+
+    return edges
