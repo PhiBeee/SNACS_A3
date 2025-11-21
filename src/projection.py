@@ -7,7 +7,8 @@ def project_weighted_edge_list(edges, alt_format = False):
     Function that projects our graph by forming relations between two users who have used the same hashtag.
     The weight of the projected edge will be the 
     sum of all weights the user had to the hashtags in common with the other user.
-    Saves the projection to a file as it goes along
+    Saves the projection to a file as it goes along.
+    The alternative format saves about 20% in storage but the file will still be big
 
     @param edges: List of edges (u,v,w) user, hashtag, weight
     @param alt_format: Whether to use alternative format or not
@@ -44,9 +45,9 @@ def project_weighted_edge_list(edges, alt_format = False):
                     relation_dict[related_user] = g[user][hashtag]['weight']
         # Save to file as we iterate through the users to avoid RAM overflow
         if alt_format:
-            append_to_file(projection_format_to_file_format((user, relation_dict), alt_format))
+            append_to_file(projection_format_to_file_format((user, relation_dict), alt_format), alt_format)
         else:
-            append_to_file(projection_format_to_file_format(([(user,relation_dict)], alt_format)))    
+            append_to_file(projection_format_to_file_format(([(user,relation_dict)], alt_format), alt_format))    
 
 
 def projection_format_to_file_format(projected_edges, alt_format = False):
@@ -58,7 +59,7 @@ def projection_format_to_file_format(projected_edges, alt_format = False):
     if alt_format:
         users_to = list(projected_edges[1].keys())
         weights = [projected_edges[1][user_to] for user_to in users_to]
-        save_format = f'{projected_edges[0]},{users_to},{weights}'
+        save_format = f'{projected_edges[0]};{users_to};{weights}'
     # One edge per line (user,user_to,weight)
     else:
         save_format = []
@@ -73,11 +74,14 @@ def append_to_file(save_format, alt_format = False):
     '''
     Takes the edges ready to be saved and appends them to the file
     This is to avoid RAM memory overflow by saving the edges as we project
+    Normal format saves each edge in a row
+    Alternative format saves as follows: user;[users_to];[weights]
     '''
-    with open('../data/hashtags_projected_small.csv', 'a+', encoding='utf-8') as f:
-        if alt_format:
+    if alt_format:
+        with open('../data/hashtags_projected_small_alt.csv', 'a+', encoding='utf-8') as f:
             f.write(f'{save_format}\n')
-        else:
+    else:
+        with open('../data/hashtags_projected_small.csv', 'a+', encoding='utf-8') as f:
             for entry in save_format:
                 f.write(f'{entry[0]},{entry[1]},{entry[2]}\n')
 

@@ -55,7 +55,7 @@ def project_graph_and_save(edges: list, remove_overlap_flag: bool, data_size: st
     g.add_weighted_edges_from(edges)
     if remove_overlap_flag: g, edges = remove_overlap(edges, g)
     # The networkx function was too weird so I made my own
-    project_weighted_edge_list(edges)
+    project_weighted_edge_list(edges, alt_format = True)
 
 def save_bipartite_hashtag_graph(graph: dict, data_size: str):
     '''
