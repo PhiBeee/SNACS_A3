@@ -41,7 +41,7 @@ def load_subset(name: str, data_size: str, amount_of_users: int):
     :returns: List of outgoing edges from the users of the selected subset
     '''
     # Set of users to keep track of unique users
-    user_set = {}
+    user_set = set({})
     edges = []
 
     filename = f'../data/{name}_{data_size}.csv'
@@ -50,7 +50,6 @@ def load_subset(name: str, data_size: str, amount_of_users: int):
     with open(filename, 'r', encoding='utf-8') as f:
         for line in f:
             line = line.strip().split(',')
-
             # User change, since each user comes one after the other
             if line[0] != current_user:
                 # Stop if we have the amount of users we wanted
@@ -63,3 +62,39 @@ def load_subset(name: str, data_size: str, amount_of_users: int):
             edges.append((line[0], line[1], int(line[2])))
 
     return edges
+
+def load_subset_alt(name: str, data_size: str, amount_of_users: int):
+    '''
+    Function to load in a subset of users from a file formatted using the alternative format
+
+    @param name: name of the dataset to get a subset from, needs to be in alt format
+    @param data_size: size of the dataset,
+    @param amount_of_users: the amount of users to take for the subset from which there are outgoing edges
+    :returns: List of outgoing edges from users of the subset
+    '''
+    edges = []
+
+    filename = f'../data/{name}_{data_size}_alt.csv'
+
+    users = 0
+    with open(filename, 'r', encoding='utf-8') as f:
+        for line in f:
+            line = line.strip().split(';')
+
+            # Separate to make it more clear
+            user = line[0]
+            users_to = line[1][2:-2].split("', '")
+            weights = line[2][1:-1].split(',')
+
+            for user_to, weight in zip(users_to, weights):
+                edges.append((user, user_to, int(weight)))
+
+            users += 1
+
+            if users == amount_of_users:
+                break
+
+    return edges
+
+
+

@@ -55,7 +55,7 @@ def projection_format_to_file_format(projected_edges, alt_format = False):
     Takes the weird format from the projection and turns it into the proper format
     Can generate two formats, one is more compact than the other.
     '''
-    # One user per line (user:[users_to][weights])
+    # One user per line (user;users_to];[weights])
     if alt_format:
         users_to = list(projected_edges[1].keys())
         weights = [projected_edges[1][user_to] for user_to in users_to]
