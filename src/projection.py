@@ -31,8 +31,9 @@ def project_weighted_edge_list(edges, alt_format = False):
     for user in tqdm(users):
         # {user_to:weight}
         relation_dict = {}
+        # hashtags the user has used
         for hashtag in g[user].keys():
-            # {user: {'weight': int}}
+            # hashtag: {user: {'weight': int}} # fuckass networkx format
             related_users_dict = g_r[hashtag]
             related_users = list(related_users_dict.keys())
             for related_user in related_users:
