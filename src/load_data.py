@@ -76,14 +76,18 @@ def load_subset_alt(name: str, data_size: str, amount_of_users: int):
 
     filename = f'../data/{name}_{data_size}_alt.csv'
 
+    flag = False
     users = 0
     with open(filename, 'r', encoding='utf-8') as f:
         for line in f:
+            if not flag:
+                print(line)
+                flag = True
             line = line.strip().split(';')
 
             # Separate to make it more clear
             user = line[0]
-            users_to = line[1][2:-2].split("', '")
+            users_to = line[1][2:-2].split("', '") 
             weights = line[2][1:-1].split(',')
 
             for user_to, weight in zip(users_to, weights):
