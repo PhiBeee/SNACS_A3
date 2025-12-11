@@ -1,8 +1,9 @@
 from load_data import load, load_processed_graph
 from preprocess_mentions import mention_graph, save_mentions_graph
+from preprocess_mentions_for_retweets import retweet_graph,save_retweet_graph
 from preprocess_hashtags import hashtag_graph, save_bipartite_hashtag_graph, project_graph_and_save
 
-def generate_data_files(data_size: str, lenient = True, rt = True, subrt = True):
+def generate_data_files(data_size: str, lenient = True, rt = False, subrt = False):
     '''
     This is the function that will generate all the preprocessed edge weight files for all the graphs.
     All the edge weights files will be saved under the data directory and can be loaded in with the function for it.
@@ -13,9 +14,14 @@ def generate_data_files(data_size: str, lenient = True, rt = True, subrt = True)
     @param subrt: Flag to ignore only content within the retweet but accept person being retweeted
     '''
     data = load(data_size)
+    print("Making mention graph")
     mg = mention_graph(data, lenient = lenient, rt = rt, subrt = subrt)
     save_mentions_graph(mg, data_size)
 
+    mg = retweet_graph(data)
+    save_retweet_graph(mg, data_size)
+
+    print("Making hashtag graph")
     hg = hashtag_graph(data, rt = rt)
     save_bipartite_hashtag_graph(hg, data_size)
 

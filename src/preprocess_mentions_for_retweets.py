@@ -2,7 +2,7 @@ import re
 from tqdm import tqdm
 # used this data to test -> this is also a good example tweet with multiple retweets, maybe take only the first retweet? I am not sure how it works
 # data = [["khopkinson","RT @changeisgood1: RT @Java4Two: RT @MsFitUniverse: #FollowFriday @JimWray @WholeFoods @BrennanAnnie @WannabeSkinny @slkeeth @lalalalu"]]
-def retweet_graph(data, lenient = False, rt = False, subrt = False):
+def retweet_graph(data):
     '''
     Returns a dictionary with the node as the key and a list of mentions from which weight can be extrapolated
 
@@ -15,6 +15,7 @@ def retweet_graph(data, lenient = False, rt = False, subrt = False):
 
     :returns: dict(str:[str])
     '''
+    print("Making retweet graph")
     rts = dict()
     for tweet in tqdm(data):
         user = tweet[1]
@@ -42,13 +43,14 @@ def save_retweet_graph(graph: dict, data_size: str):
     @param graph: Dictionnary containing as key the users and as value a list of users they mentioned
     @param data_size: string indicating which data set size is being processed
     '''
+    print("Saving retweet file")
     out = []
     for user in graph.keys():
         for retweet in set(graph[user]):
             # Add (user, mention, weight) to our list
             out.append(f'{user},{retweet},{graph[user].count(retweet)}')
 
-    with open(f'../data/mentions_{data_size}.csv', 'w+', encoding='utf-8') as f:
+    with open(f'../data/retweets_{data_size}.csv', 'w+', encoding='utf-8') as f:
         for item in out:
             f.write(f'{item}\n')
     f.close()
