@@ -1,14 +1,17 @@
 import re
 from tqdm import tqdm
 
-def mention_graph(data, lenient = False, rt = True, subrt = False):
+def mention_graph(data, lenient = False, rt = False, subrt = False):
     '''
     Returns a dictionary with the node as the key and a list of mentions from which weight can be extrapolated
 
     @param data: list of lists as formatted by the load function
     @param lenient: boolean indicating whether we accept a whitespace between the @ or not
-    @param rt: Whether to include retweet's in the graph too
+    @param rt: Whether to include retweet's in the graph too. 
+    This is set to False because the old paper which we are comparing with has a separate weight element for this
     @param subrt: Whether to include mentions within a retweet or not
+    This is set to False because the old paper which we are comparing with has a separate weight element for this
+
     :returns: dict(str:[str])
     '''
     mentions = dict()
