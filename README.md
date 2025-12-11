@@ -23,4 +23,4 @@ This will currently load in the data and generate three processed files: `mentio
 
 ## To do
 - Topic modelling
-- Weight calculation
+- Weight calculation for the original paper (because there is no code there)
